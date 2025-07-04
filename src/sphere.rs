@@ -1,12 +1,11 @@
 use std::sync::Arc;
 
-use cgmath::{InnerSpace, dot};
-
 use crate::{
     hittable::{HitRecord, Hittable},
     interval::Interval,
     material::Material,
-    ray::{Point, Ray},
+    ray::Ray,
+    vector::{Point, dot},
 };
 
 pub struct Sphere {

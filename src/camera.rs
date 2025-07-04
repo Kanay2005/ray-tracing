@@ -5,14 +5,10 @@ use std::{
     thread,
 };
 
-use cgmath::{ElementWise, InnerSpace};
 use image::{ImageBuffer, Rgb};
 
 use crate::{
-    Colour, get_colour_from_pixel,
-    hittable::Hittable,
-    interval::Interval,
-    ray::{Ray, Vector},
+    Colour, get_colour_from_pixel, hittable::Hittable, interval::Interval, ray::Ray, vector::Vector,
 };
 use rand::{Rng, random_range};
 
@@ -61,16 +57,16 @@ impl Camera {
         let v = w.cross(u);
 
         // Edges
-        let viewport_u = viewport_width * u;
-        let viewport_v = viewport_height * -v;
+        let viewport_u = u * viewport_width;
+        let viewport_v = -v * viewport_height;
 
         // Pixel distances
         let pixel_delta_u = viewport_u / f64::from(image_width);
         let pixel_delta_v = viewport_v / f64::from(image_height);
 
         // Useful Vectors
-        let viewport_upper_left = centre - (focus_dist * w) - 0.5 * (viewport_u + viewport_v);
-        let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+        let viewport_upper_left = centre - (w * focus_dist) - (viewport_u + viewport_v) * 0.5;
+        let pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
         let defocus_radius = focus_dist * (defocus_angle / 2.0).to_radians().tan();
         let defocus_disk_u = u * defocus_radius;
         let defocus_disk_v = v * defocus_radius;
@@ -143,7 +139,7 @@ impl Camera {
                 get_colour_from_pixel(pixels[y as usize][x as usize] * self.pixel_samples_scale);
             *pixel_out = Rgb([r, g, b]);
         }
-        let _ = img_buf.save("image.jpg");
+        let _ = img_buf.save("image.jpeg");
     }
 
     fn get_ray(&self, i: i32, j: i32) -> Ray {
@@ -151,8 +147,8 @@ impl Camera {
         let offset = Vector::new(rng.random::<f64>() - 0.5, rng.random::<f64>() - 0.5, 0.0);
 
         let pixel = self.pixel00_loc
-            + (f64::from(i) + offset.x) * self.pixel_delta_u
-            + (f64::from(j) + offset.y) * self.pixel_delta_v;
+            + self.pixel_delta_u * (f64::from(i) + offset.x)
+            + self.pixel_delta_v * (f64::from(j) + offset.y);
 
         let origin = match self.defocus_angle <= 0.0 {
             true => self.centre,
@@ -187,13 +183,13 @@ impl Camera {
 
         let unit_direction = ray.direction.normalize();
         let a = 0.5 * (unit_direction.y + 1.0);
-        (1.0 - a) * Colour::new(1.0, 1.0, 1.0) + a * Colour::new(0.5, 0.7, 1.0)
+        Colour::new(1.0, 1.0, 1.0) * (1.0 - a) + Colour::new(0.5, 0.7, 1.0) * a
         // 0.25 * Colour::new(111.0 / 255.0, 144.0 / 255.0, 168.0 / 255.0)
     }
 
     fn defocus_disk_sample(&self) -> Vector {
         let p = random_in_unit_disk();
-        self.centre + (p.x * self.defocus_disk_u) + (p.y * self.defocus_disk_v)
+        self.centre + (self.defocus_disk_u * p.x) + (self.defocus_disk_v * p.y)
     }
 }
 

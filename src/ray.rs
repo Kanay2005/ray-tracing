@@ -1,7 +1,4 @@
-use cgmath::Vector3;
-
-pub type Point = Vector3<f64>;
-pub type Vector = Vector3<f64>;
+use crate::vector::*;
 
 pub struct Ray {
     pub origin: Point,

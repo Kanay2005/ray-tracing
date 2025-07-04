@@ -1,10 +1,10 @@
-use cgmath::{InnerSpace, dot};
 use rand::{random, random_range};
 
 use crate::{
     Colour,
     hittable::HitRecord,
-    ray::{Ray, Vector},
+    ray::Ray,
+    vector::{Vector, dot},
 };
 
 pub struct RayRecord {
@@ -52,7 +52,7 @@ impl Material for Metal {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> RayRecord {
         // might have to change it so that the ones that are pointed backwards are not scattered.
         let reflected =
-            reflect(r_in.direction, rec.normal).normalize() + (self.fuzz * random_unit_vector());
+            reflect(r_in.direction, rec.normal).normalize() + (random_unit_vector() * self.fuzz);
 
         RayRecord::new(self.albedo, Some(Ray::new(rec.point, reflected)))
     }
@@ -128,13 +128,13 @@ fn near_zero(vec: Vector) -> bool {
 }
 
 fn reflect(v: Vector, n: Vector) -> Vector {
-    v - 2.0 * dot(v, n) * n
+    v - n * 2.0 * dot(v, n)
 }
 
 fn refract(v: Vector, n: Vector, etai_over_etat: f64) -> Vector {
     let cos_theta = dot(-v, n).min(1.0);
-    let r_out_perp = etai_over_etat * (v + cos_theta * n);
-    let r_out_parallel = -(1.0 - r_out_perp.magnitude2()).abs().sqrt() * n;
+    let r_out_perp = (v + n * cos_theta) * etai_over_etat;
+    let r_out_parallel = n * -(1.0 - r_out_perp.magnitude2()).abs().sqrt();
     r_out_perp + r_out_parallel
 }
 

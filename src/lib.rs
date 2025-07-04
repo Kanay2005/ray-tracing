@@ -1,4 +1,4 @@
-use cgmath::Vector3;
+use crate::vector::Vector;
 use interval::Interval;
 
 pub mod camera;
@@ -8,7 +8,9 @@ pub mod interval;
 pub mod material;
 pub mod ray;
 pub mod sphere;
-pub type Colour = Vector3<f64>;
+pub mod vector;
+
+pub type Colour = Vector;
 
 fn linear_to_gamma(x: f64) -> f64 {
     match x > 0.0 {

@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use cgmath::InnerSpace;
 use rand::random;
 use ray_tracing::Colour;
 use ray_tracing::camera::Camera;
@@ -10,8 +9,8 @@ use ray_tracing::material::Lambertian;
 use ray_tracing::material::Light;
 use ray_tracing::material::Material;
 use ray_tracing::material::Metal;
-use ray_tracing::ray::*;
 use ray_tracing::sphere::*;
+use ray_tracing::vector::*;
 
 fn main() {
     let camera = Camera::new(
