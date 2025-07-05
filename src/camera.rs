@@ -139,7 +139,7 @@ impl Camera {
                 get_colour_from_pixel(pixels[y as usize][x as usize] * self.pixel_samples_scale);
             *pixel_out = Rgb([r, g, b]);
         }
-        let _ = img_buf.save("image.jpeg");
+        let _ = img_buf.save("render.png");
     }
 
     fn get_ray(&self, i: i32, j: i32) -> Ray {
