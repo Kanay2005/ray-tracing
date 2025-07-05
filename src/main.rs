@@ -16,9 +16,9 @@ use ray_tracing::vector::*;
 fn main() {
     let camera = Camera::new(
         16.0 / 9.0,
-        640,
-        5,
-        50,
+        1280,
+        500,
+        500,
         20.0,
         Vector::new(13.0, 2.0, 3.0),
         Vector::new(0.0, 0.0, 0.0),

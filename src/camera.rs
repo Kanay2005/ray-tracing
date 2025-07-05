@@ -181,10 +181,13 @@ impl Camera {
             };
         }
 
-        let unit_direction = ray.direction.normalize();
-        let a = 0.5 * (unit_direction.y + 1.0);
-        Colour::new(1.0, 1.0, 1.0) * (1.0 - a) + Colour::new(0.5, 0.7, 1.0) * a
-        // 0.25 * Colour::new(111.0 / 255.0, 144.0 / 255.0, 168.0 / 255.0)
+        // These lines create the normal bright background.
+        // let unit_direction = ray.direction.normalize();
+        // let a = 0.5 * (unit_direction.y + 1.0);
+        // Colour::new(1.0, 1.0, 1.0) * (1.0 - a) + Colour::new(0.5, 0.7, 1.0) * a
+
+        // Comment out the above lines and uncomment this line for a dark background.
+        0.25 * Colour::new(111.0 / 255.0, 144.0 / 255.0, 168.0 / 255.0)
     }
 
     fn defocus_disk_sample(&self) -> Vector {
