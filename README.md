@@ -31,7 +31,7 @@ Here are some scenes rendered with the engine. For best results, render at high 
 -   [x] **Object Primitives:**
     -   [x] Spheres
 
--   [ ] **(Planned)** Bounding Volume Hierarchy (BVH) for render acceleration.
+-   [ ] **(Planned)** Implemented a JSON scene parser, allowing scenes to be defined and loaded from external files without recompiling.
 -   [ ] **(Planned)** Support for Triangle Meshes (loading `.obj` files).
 
 ---
@@ -63,12 +63,10 @@ The scene is currently hardcoded in `src/main.rs`.
 
 ## Technical Learnings
 
-This engine simulates the physics of light by tracing rays from the camera into the scene to determine the color of each pixel. This is achieved through a few core steps:
+This engine simulates the physics of light by tracing rays from the camera into the scene to determine the colour of each pixel. This is achieved through a few core steps:
 
 *   **Cast & Intersect:** A ray is sent from the camera through a pixel. The engine finds the closest object in the scene that this ray hits.
-
-*   **Bounces:** When a ray hits an object, the material determines its next path—scattering off matte surfaces, reflecting off metal, or refracting through glass. This process repeats, accumulating color with each bounce to create photorealistic global illumination.
-
+*   **Bounces:** When a ray hits an object, the material determines its next path—scattering off matte surfaces, reflecting off metal, or refracting through glass. This process repeats, accumulating colour with each bounce to create photorealistic global illumination.
 *   **Samples:** To achieve realism and avoid sharp, jagged graphics, hundreds of rays (samples) are cast for each pixel, each with a slight random variation. Averaging the results produces key effects like **soft shadows, anti-aliasing, and depth-of-field blur**.
 
 This project was then made significantly faster through a deep dive into Rust's performance and safety features in the context of concurrency.
