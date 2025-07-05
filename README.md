@@ -7,7 +7,7 @@ A high-performance, multithreaded ray tracing engine built from scratch in Rust.
 
 ---
 
-## 📸 Gallery
+## Gallery
 
 Here are some scenes rendered with the engine. For best results, render at high resolution (e.g., 1280x720) and use a high sample count to produce clean, noise-free images.
 
@@ -18,7 +18,7 @@ Here are some scenes rendered with the engine. For best results, render at high 
 
 ---
 
-## ✨ Features
+## Features
 
 -   [x] **Multithreaded Rendering:** Utilizes `std::thread` and `Arc` to parallelize the rendering process across all available CPU cores, dramatically reducing render times. The time reduction is about x16 comparing to single-threaded when creating 16 threads on a CPU capable of procressing all of those threads concurrently.
 -   [x] **Configurable Camera:** A fully implemented camera with adjustable field-of-view, position, and **Depth of Field (Defocus Blur)**.
@@ -36,7 +36,7 @@ Here are some scenes rendered with the engine. For best results, render at high 
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -61,9 +61,17 @@ The scene is currently hardcoded in `src/main.rs`.
 
 ---
 
-## 💡 Technical Learnings
+## Technical Learnings
 
-This project was a deep dive into Rust's performance and safety features in the context of a computationally intensive task.
+This engine simulates the physics of light by tracing rays from the camera into the scene to determine the color of each pixel. This is achieved through a few core steps:
+
+*   **Cast & Intersect:** A ray is sent from the camera through a pixel. The engine finds the closest object in the scene that this ray hits.
+
+*   **Bounces:** When a ray hits an object, the material determines its next path—scattering off matte surfaces, reflecting off metal, or refracting through glass. This process repeats, accumulating color with each bounce to create photorealistic global illumination.
+
+*   **Samples:** To achieve realism and avoid sharp, jagged graphics, hundreds of rays (samples) are cast for each pixel, each with a slight random variation. Averaging the results produces key effects like **soft shadows, anti-aliasing, and depth-of-field blur**.
+
+This project was then made significantly faster through a deep dive into Rust's performance and safety features in the context of concurrency.
 
 -   **Fearless Concurrency:** Using `Arc<T>` for shared, thread-safe ownership of scene data (like materials and objects) was critical. This avoids costly data clones for each thread while guaranteeing memory safety, which is a core strength of Rust.
 -   **Dynamic Dispatch:** The use of trait objects (`Box<dyn Material>`) provides a flexible material system. It allows any object that implements the `Material` trait to be stored and used interchangeably at runtime, making it easy to extend the engine with new material types without changing the core rendering logic.
